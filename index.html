@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makelo — KI-gestützte Leadgenerierung für Immobilienmakler</title>
+    <meta name="description" content="Makelo generiert qualifizierte Verkäufer-Leads über Meta Ads und ruft sie innerhalb von Minuten per KI an. Garantiert 10 Erstgespräche in 30 Tagen.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000814;
+            --accent: #FFFFFF;
+            --secondary: #A0A0A0;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--accent);
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        /* ─── BACKGROUND EFFECTS ─── */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 10%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 10%, transparent 80%);
+        }
+
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: orbDrift 20s ease-in-out infinite alternate;
+        }
+
+        .bg-orb--1 {
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(20, 80, 220, 0.28), transparent 70%);
+            top: -15%;
+            left: -10%;
+            animation-duration: 22s;
+        }
+
+        .bg-orb--2 {
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, rgba(0, 120, 255, 0.22), transparent 70%);
+            top: 25%;
+            right: -12%;
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+
+        .bg-orb--3 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(30, 90, 230, 0.2), transparent 70%);
+            bottom: 5%;
+            left: 10%;
+            animation-duration: 25s;
+            animation-delay: -10s;
+        }
+
+        .bg-orb--4 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(40, 110, 255, 0.16), transparent 70%);
+            top: 55%;
+            right: 15%;
+            animation-duration: 20s;
+            animation-delay: -3s;
+        }
+
+        .bg-orb--5 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(50, 140, 255, 0.14), transparent 70%);
+            top: 70%;
+            left: 50%;
+            animation-duration: 28s;
+            animation-delay: -8s;
+        }
+
+        .bg-orb--6 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 160, 255, 0.12), transparent 70%);
+            top: 10%;
+            left: 40%;
+            animation-duration: 24s;
+            animation-delay: -12s;
+        }
+
+        @keyframes orbDrift {
+            0%   { transform: translate(0, 0) scale(1); }
+            25%  { transform: translate(40px, -30px) scale(1.08); }
+            50%  { transform: translate(-25px, 20px) scale(0.93); }
+            75%  { transform: translate(20px, 10px) scale(1.04); }
+            100% { transform: translate(-15px, -15px) scale(1); }
+        }
+
+        .bg-particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            animation: particleFloat linear infinite;
+        }
+
+        .bg-particle--glow {
+            box-shadow: 0 0 6px 2px rgba(60, 140, 255, 0.35);
+        }
+
+        @keyframes particleFloat {
+            0%   { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            5%   { opacity: 1; }
+            50%  { transform: translateY(45vh) translateX(var(--drift)) scale(1); }
+            95%  { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(calc(var(--drift) * -1)) scale(0); opacity: 0; }
+        }
+
+        /* Animated constellation lines canvas */
+        #bgCanvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Section glow accents */
+        .section-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero .section-glow {
+            background: radial-gradient(circle, rgba(30, 100, 255, 0.22), transparent 70%);
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            height: 700px;
+        }
+
+        #problem { position: relative; }
+        #problem .section-glow {
+            background: radial-gradient(circle, rgba(255, 60, 80, 0.06), transparent 70%);
+            top: -20%;
+            right: -15%;
+        }
+
+        #leistungen { position: relative; }
+        #leistungen .section-glow {
+            background: radial-gradient(circle, rgba(20, 90, 255, 0.1), transparent 70%);
+            bottom: -10%;
+            left: -15%;
+        }
+
+        .cta-section { position: relative; }
+        .cta-section .section-glow {
+            background: radial-gradient(circle, rgba(40, 110, 255, 0.14), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+        }
+
+        /* Horizontal accent lines */
+        .bg-line {
+            position: absolute;
+            height: 1px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-line--1 {
+            width: 40%;
+            top: 18%;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(40, 110, 255, 0.1), transparent);
+        }
+
+        .bg-line--2 {
+            width: 35%;
+            top: 45%;
+            left: 0;
+            background: linear-gradient(90deg, transparent, rgba(60, 140, 255, 0.08), transparent);
+        }
+
+        .bg-line--3 {
+            width: 50%;
+            top: 72%;
+            right: 5%;
+            background: linear-gradient(90deg, transparent, rgba(0, 120, 255, 0.08), transparent);
+        }
+
+        /* Noise texture overlay */
+        .bg-noise {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px 256px;
+        }
+
+        /* Ensure content stays above backgrounds */
+        nav, section, footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s, backdrop-filter 0.3s;
+        }
+
+        nav.scrolled {
+            background: rgba(0, 8, 20, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-logo img {
+            height: 42px;
+            width: auto;
+        }
+
+        /* ─── HERO LOGO ─── */
+        .hero-logo-wrapper {
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-logo-wrapper img {
+            width: clamp(220px, 30vw, 400px);
+            height: auto;
+            position: relative;
+            z-index: 2;
+            animation: logoFloat 4s ease-in-out infinite;
+            filter: brightness(1.1);
+        }
+
+        .hero-logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(30, 110, 255, 0.25) 0%, rgba(0, 140, 255, 0.1) 30%, transparent 65%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: glowPulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .hero-logo-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180%;
+            height: 180%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            z-index: 1;
+            animation: ringExpand 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .hero-logo-ring:nth-child(3) {
+            width: 220%;
+            height: 220%;
+            animation-delay: 0.5s;
+            border-color: rgba(255, 255, 255, 0.025);
+        }
+
+        .hero-logo-ring:nth-child(4) {
+            width: 260%;
+            height: 260%;
+            animation-delay: 1s;
+            border-color: rgba(255, 255, 255, 0.015);
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+        }
+
+        @keyframes ringExpand {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.06); opacity: 1; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: var(--bg) !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            font-weight: 600 !important;
+            transition: opacity 0.3s !important;
+        }
+
+        .nav-cta:hover {
+            opacity: 0.9;
+        }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .mobile-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .mobile-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .mobile-toggle.active span:nth-child(2) { opacity: 0; }
+        .mobile-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        /* ─── SECTIONS ─── */
+        section {
+            padding: 7rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 6rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(30, 110, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            max-width: 800px;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            color: var(--secondary);
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            max-width: 520px;
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: var(--bg);
+            padding: 1rem 2.25rem;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-primary svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s;
+        }
+
+        .btn-primary:hover svg {
+            transform: translateX(3px);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--secondary);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+
+        /* ─── GLASS CARDS ─── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background 0.3s, transform 0.3s, border-color 0.3s;
+        }
+
+        .glass-card:hover {
+            background: var(--glass-hover);
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+        .glass-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .glass-card p {
+            color: var(--secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ─── PROBLEM ─── */
+        .problem-card .card-icon {
+            background: rgba(255, 60, 60, 0.08);
+            border: 1px solid rgba(255, 60, 60, 0.15);
+        }
+
+        .problem-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.04);
+            position: absolute;
+            top: 1.25rem;
+            right: 1.5rem;
+        }
+
+        .problem-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ─── SERVICES ─── */
+        .service-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 0.35rem 0.75rem;
+            border-radius: 100px;
+            border: 1px solid var(--glass-border);
+            color: var(--secondary);
+            margin-bottom: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* ─── TIMELINE ─── */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 39px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--glass-border), rgba(255,255,255,0.02));
+        }
+
+        .timeline-step {
+            display: flex;
+            gap: 2.5rem;
+            padding: 2.5rem 0;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .timeline-number {
+            width: 80px;
+            min-width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            color: var(--secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+            max-width: 500px;
+        }
+
+        /* ─── TESTIMONIAL ─── */
+        .testimonial-section {
+            text-align: center;
+        }
+
+        .testimonial-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 700px;
+            margin: 3rem auto 0;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: relative;
+        }
+
+        .testimonial-quote {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 2rem;
+        }
+
+        .testimonial-quote::before {
+            content: '\201E';
+            font-size: 4rem;
+            position: absolute;
+            top: 1rem;
+            left: 2rem;
+            color: rgba(255, 255, 255, 0.06);
+            font-style: normal;
+            line-height: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .testimonial-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .testimonial-role {
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+
+        /* ─── CTA SECTION ─── */
+        .cta-section {
+            text-align: center;
+            padding: 8rem 2rem;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 4.5vw, 3.25rem);
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .cta-section p {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-logo img {
+            height: 28px;
+            width: auto;
+        }
+
+        .footer-center {
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+
+        .footer-right {
+            color: var(--secondary);
+            font-size: 0.8rem;
+        }
+
+        /* ─── ANIMATIONS ─── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            section {
+                padding: 5rem 1.5rem;
+            }
+
+            .timeline-step {
+                gap: 1.5rem;
+            }
+
+            .timeline-number {
+                width: 60px;
+                min-width: 60px;
+                height: 60px;
+                font-size: 1.25rem;
+            }
+
+            .timeline::before {
+                left: 29px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 280px;
+                height: 100vh;
+                background: rgba(3, 0, 25, 0.95);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 5rem 2rem 2rem;
+                gap: 1.5rem;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                border-left: 1px solid var(--glass-border);
+            }
+
+            .nav-links.open {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle {
+                display: flex;
+                z-index: 1001;
+            }
+
+            .hero h1 {
+                font-size: clamp(2rem, 8vw, 3rem);
+            }
+
+            .testimonial-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── BACKGROUND EFFECTS ─── -->
+    <canvas id="bgCanvas"></canvas>
+    <div class="bg-grid"></div>
+    <div class="bg-orbs">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+        <div class="bg-orb bg-orb--4"></div>
+        <div class="bg-orb bg-orb--5"></div>
+        <div class="bg-orb bg-orb--6"></div>
+    </div>
+    <div class="bg-particles" id="bgParticles"></div>
+    <div class="bg-line bg-line--1"></div>
+    <div class="bg-line bg-line--2"></div>
+    <div class="bg-line bg-line--3"></div>
+    <div class="bg-noise"></div>
+
+    <!-- ─── NAVIGATION ─── -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo">
+            <img src="logo.png" alt="Makelo">
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#problem">Problem</a></li>
+            <li><a href="#leistungen">Leistungen</a></li>
+            <li><a href="#prozess">Prozess</a></li>
+            <li><a href="#kontakt" class="nav-cta">Kontakt</a></li>
+        </ul>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Menü">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section class="hero" id="hero">
+        <div class="section-glow"></div>
+        <div class="hero-logo-wrapper reveal">
+            <div class="hero-logo-glow"></div>
+            <div class="hero-logo-ring"></div>
+            <div class="hero-logo-ring"></div>
+            <div class="hero-logo-ring"></div>
+            <img src="logo.png" alt="Makelo">
+        </div>
+        <h1 class="reveal">Qualifizierte Leads.<br>In Minuten angerufen.<br>Termine im Kalender.</h1>
+        <p class="reveal reveal-delay-1">Makelo generiert mit Meta Ads verkaufsbereite Eigentümer als Leads. Unsere KI ruft sie in wenigen Minuten an, qualifiziert sie und bucht Termine direkt in deinen Kalender.</p>
+        <a href="mailto:kimi@makelo-agency.de?subject=Kostenloses%20Strategiegespr%C3%A4ch&body=Hallo%20Makelo%2C%20ich%20interessiere%20mich%20f%C3%BCr%20ein%20kostenloses%20Strategiegespr%C3%A4ch." class="btn-primary reveal reveal-delay-2">
+            Kostenloses Strategiegespräch
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+    </section>
+
+    <!-- ─── PROBLEM ─── -->
+    <section id="problem">
+        <div class="section-glow"></div>
+        <p class="section-label reveal">Das Problem</p>
+        <h2 class="section-title reveal">Warum dir täglich<br>Verkäufer entgehen</h2>
+        <p class="section-subtitle reveal">Klassische Akquise ist zeitaufwendig, teuer und unvorhersehbar. Und jeder Lead der nicht sofort kontaktiert wird, ist verloren.</p>
+
+        <div class="card-grid">
+            <div class="glass-card problem-card reveal reveal-delay-1">
+                <span class="problem-number">01</span>
+                <div class="card-icon">
+                    <svg width="24" height="24" fill="none" stroke="#ff4d4d" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/><line x1="1" y1="1" x2="23" y2="23" stroke="#ff4d4d" stroke-width="2"/></svg>
+                </div>
+                <h3>Unvorhersehbare Anfragen</h3>
+                <p>Empfehlungen, Kaltakquise, Zeitungsinserate — du weißt nie, wie viele Verkäufer-Anfragen nächsten Monat kommen.</p>
+            </div>
+            <div class="glass-card problem-card reveal reveal-delay-2">
+                <span class="problem-number">02</span>
+                <div class="card-icon">
+                    <svg width="24" height="24" fill="none" stroke="#ff4d4d" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <h3>Zu langsame Reaktion</h3>
+                <p>Leads die nicht innerhalb von 5 Minuten kontaktiert werden, sind statistisch verloren. Die Konkurrenz war schneller.</p>
+            </div>
+            <div class="glass-card problem-card reveal reveal-delay-3">
+                <span class="problem-number">03</span>
+                <div class="card-icon">
+                    <svg width="24" height="24" fill="none" stroke="#ff4d4d" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/><line x1="18" y1="8" x2="23" y2="8" stroke="#ff4d4d" stroke-width="2"/></svg>
+                </div>
+                <h3>Kein skalierbares System</h3>
+                <p>Du steckst zwischen Akquise, Telefonaten und Terminen fest, anstatt dich auf das Wesentliche zu konzentrieren: den Verkauf.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── LEISTUNGEN ─── -->
+    <section id="leistungen">
+        <div class="section-glow"></div>
+        <p class="section-label reveal">Unsere Leistungen</p>
+        <h2 class="section-title reveal">Dein kompletter<br>Akquise-Kanal</h2>
+        <p class="section-subtitle reveal">Wir bauen dir ein System, das von der Anzeige bis zum gebuchten Termin alles übernimmt.</p>
+        <div class="card-grid">
+            <div class="glass-card reveal reveal-delay-1">
+                <span class="service-tag">Paid Ads</span>
+                <h3>Meta Ads Kampagnen</h3>
+                <p>Wir erstellen und schalten gezielte Facebook- und Instagram-Anzeigen an verkaufsbereite Eigentümer in deiner Zielregion. Creatives und Copy inklusive.</p>
+            </div>
+            <div class="glass-card reveal reveal-delay-2">
+                <span class="service-tag">Voice AI</span>
+                <h3>KI Caller in wenigen Minuten</h3>
+                <p>Sobald ein Lead reinkommt, ruft unser KI System ihn innerhalb weniger Minuten an, qualifiziert ihn und beantwortet erste Fragen. Rund um die Uhr.</p>
+            </div>
+            <div class="glass-card reveal reveal-delay-3">
+                <span class="service-tag">Booking</span>
+                <h3>Automatische Terminbuchung</h3>
+                <p>Qualifizierte Leads werden direkt in deinen Kalender gebucht. Kein Nachfassen, kein Telefonieren. Du musst nur den Termin wahrnehmen.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── PROZESS ─── -->
+    <section id="prozess">
+        <p class="section-label reveal">So funktioniert es</p>
+        <h2 class="section-title reveal">In 4 Schritten zu<br>gebuchten Terminen</h2>
+        <p class="section-subtitle reveal">Vom ersten Klick bis zum Termin in deinem Kalender. Vollautomatisch.</p>
+        <div class="timeline">
+            <div class="timeline-step reveal">
+                <div class="timeline-number">01</div>
+                <div class="timeline-content">
+                    <h3>Meta Ads schalten</h3>
+                    <p>Wir erstellen gezielte Werbeanzeigen auf Facebook und Instagram an Hausbesitzer in deiner Zielregion. Creatives und Copywriting sind inklusive.</p>
+                </div>
+            </div>
+            <div class="timeline-step reveal reveal-delay-1">
+                <div class="timeline-number">02</div>
+                <div class="timeline-content">
+                    <h3>Eigentümer füllt Formular aus</h3>
+                    <p>Interessierte Verkäufer hinterlassen ihre Kontaktdaten direkt in der Anzeige oder auf einer Landingpage von uns.</p>
+                </div>
+            </div>
+            <div class="timeline-step reveal reveal-delay-2">
+                <div class="timeline-number">03</div>
+                <div class="timeline-content">
+                    <h3>KI ruft in wenigen Minuten an</h3>
+                    <p>Unser KI System kontaktiert den Lead sofort, qualifiziert ihn und bucht den Termin automatisch, bevor die Konkurrenz überhaupt reagiert.</p>
+                </div>
+            </div>
+            <div class="timeline-step reveal reveal-delay-3">
+                <div class="timeline-number">04</div>
+                <div class="timeline-content">
+                    <h3>Termin in deinem Kalender</h3>
+                    <p>Du siehst den fertigen Termin. Kein Nachfassen, kein Telefonieren, keine zusätzliche Arbeit. Nur das Gespräch mit dem Verkäufer.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── CTA ─── -->
+    <section class="cta-section" id="kontakt">
+        <div class="section-glow"></div>
+        <p class="section-label reveal">Jetzt starten</p>
+        <h2 class="reveal">10 qualifizierte Termine<br>in 30 Tagen. Garantiert.</h2>
+        <p class="reveal reveal-delay-1">Wenn wir es nicht schaffen, arbeiten wir kostenlos weiter. Das Risiko liegt vollständig bei uns.</p>
+        <a href="mailto:kimi@makelo-agency.de?subject=Kostenloses%20Strategiegespr%C3%A4ch&body=Hallo%20Makelo%2C%20ich%20interessiere%20mich%20f%C3%BCr%20ein%20kostenloses%20Strategiegespr%C3%A4ch." class="btn-primary reveal reveal-delay-2">
+            Strategiegespräch buchen
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+    </section>
+
+    <!-- ─── FOOTER ─── -->
+    <footer>
+        <div class="footer-inner">
+            <a href="#" class="footer-logo">
+                <img src="logo.png" alt="Makelo">
+            </a>
+            <div class="footer-center">Kontakt kimi@makelo-agency.de</div>
+            <div class="footer-right">&copy; 2025 Makelo. Alle Rechte vorbehalten.</div>
+        </div>
+    </footer>
+
+    <script>
+        // ─── PARTICLES ───
+        const particlesContainer = document.getElementById('bgParticles');
+        for (let i = 0; i < 50; i++) {
+            const p = document.createElement('div');
+            p.classList.add('bg-particle');
+            if (Math.random() > 0.7) p.classList.add('bg-particle--glow');
+            p.style.left = Math.random() * 100 + '%';
+            const size = Math.random() * 2.5 + 1;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.setProperty('--drift', (Math.random() * 80 - 40) + 'px');
+            p.style.animationDuration = (Math.random() * 12 + 8) + 's';
+            p.style.animationDelay = (Math.random() * 12) + 's';
+            particlesContainer.appendChild(p);
+        }
+
+        // ─── CONSTELLATION CANVAS ───
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let dots = [];
+        const DOT_COUNT = 40;
+        const CONNECT_DIST = 150;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        for (let i = 0; i < DOT_COUNT; i++) {
+            dots.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                r: Math.random() * 1.5 + 0.5,
+                o: Math.random() * 0.3 + 0.1
+            });
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            dots.forEach(d => {
+                d.x += d.vx;
+                d.y += d.vy;
+                if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
+                if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,255,255,${d.o})`;
+                ctx.fill();
+            });
+            for (let i = 0; i < dots.length; i++) {
+                for (let j = i + 1; j < dots.length; j++) {
+                    const dx = dots[i].x - dots[j].x;
+                    const dy = dots[i].y - dots[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < CONNECT_DIST) {
+                        ctx.beginPath();
+                        ctx.moveTo(dots[i].x, dots[i].y);
+                        ctx.lineTo(dots[j].x, dots[j].y);
+                        ctx.strokeStyle = `rgba(40,120,255,${0.08 * (1 - dist / CONNECT_DIST)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // ─── SCROLL REVEAL ───
+        const revealElements = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        revealElements.forEach(el => observer.observe(el));
+
+        // ─── NAV SCROLL ───
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // ─── MOBILE MENU ───
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        mobileToggle.addEventListener('click', () => {
+            mobileToggle.classList.toggle('active');
+            navLinks.classList.toggle('open');
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileToggle.classList.remove('active');
+                navLinks.classList.remove('open');
+            });
+        });
+    </script>
+</body>
+</html>
