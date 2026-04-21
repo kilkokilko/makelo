@@ -796,6 +796,26 @@
             font-size: 0.8rem;
         }
 
+        .footer-legal {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-legal a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+
+        .footer-legal a:hover {
+            color: var(--accent);
+        }
+
         /* ─── ANIMATIONS ─── */
         .reveal {
             opacity: 0;
@@ -1050,6 +1070,11 @@
             </a>
             <div class="footer-center">Kontakt kimi@makelo-agency.de</div>
             <div class="footer-right">&copy; 2025 Makelo. Alle Rechte vorbehalten.</div>
+        </div>
+        <div class="footer-legal">
+            <a href="impressum.html">Impressum</a>
+            <a href="datenschutz.html">Datenschutz</a>
+            <a href="agb.html">AGB</a>
         </div>
     </footer>
 
