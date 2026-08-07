@@ -1,0 +1,16 @@
+{
+  // Cloudflare Worker, der ausschliesslich die statisch exportierte Seite
+  // ausliefert. Es gibt kein Worker-Skript, deshalb steht hier kein "main":
+  // "assets" allein genuegt fuer reines Hosting.
+  "name": "makelo",
+  "compatibility_date": "2026-04-08",
+
+  "assets": {
+    // Hierhin exportiert "npm run build" (siehe output: "export" in next.config.ts)
+    "directory": "./out",
+
+    // Der statische Export legt 404.html an, das wird fuer unbekannte
+    // Pfade ausgeliefert statt einer leeren Cloudflare-Fehlerseite.
+    "not_found_handling": "404-page"
+  }
+}

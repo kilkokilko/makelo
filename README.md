@@ -24,8 +24,22 @@ http://localhost:3000
 npm run build
 ```
 
-`output: "export"`. Der Build landet als statisches Bundle in `out/` und kann direkt
-auf Cloudflare Pages hochgeladen werden (Build command `npm run build`, Output `out`).
+`output: "export"`. Der Build landet als statisches Bundle in `out/`.
+
+## Deployment
+
+Die Seite laeuft als Cloudflare Worker mit statischen Assets, angebunden an das
+GitHub-Repo `kilkokilko/makelo`. Ein Push auf `main` loest Build und Deployment aus.
+
+`wrangler.jsonc` sagt dem Worker, dass er `out/` ausliefern soll. Im Cloudflare
+Dashboard unter Build configuration muss stehen:
+
+- Build command: `npm run build`
+- Deploy command: `npx wrangler deploy`
+- Root directory: `/`
+
+Es gibt kein Worker-Skript. Der Worker ist reines Hosting fuer die exportierten
+Dateien.
 
 ## Struktur
 
